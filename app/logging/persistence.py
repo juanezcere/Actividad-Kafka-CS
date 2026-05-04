@@ -1,5 +1,11 @@
+from hmac import new
+
 from kafka import KafkaConsumer
 from json import loads
+from app.domain.models.log import LogModel
+from app.infrastructure.adapters.repositories.sqlite_log_repository import SQLiteLogRepository
+
+repo = SQLiteLogRepository()
 
 
 def eternal(function):
@@ -21,9 +27,17 @@ class LogPersistenceService:
         )
 
     def save(self, message: dict) -> None:
-        print(f"Persisting log: {message}.")
+        new_log = LogModel(
+            id=None,
+            level=message['level'],
+            message=message['message'],
+            timestamp=message['timestamp'],
+            topic=message['topic']
+        )
+        repo.save(new_log)
+        print(f"New log message saved: {new_log}")
 
     @eternal
     def run(self):
         for message in self.consumer:
-            print(f"New log message received: {message}")
+            print(f"Persisting log: {message}.")

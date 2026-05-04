@@ -7,6 +7,6 @@ class BookModel:
     id: Optional[int]
     title: str
     author: str
-    description: str
     pages: int
+    description: str
     rating: int
