@@ -1,2 +1,3 @@
 # Actividad-Kafka-CS
-Actividad de Kafka realizada con Javascript por Juan Esteban García Cardona
+
+Actividad de Kafka realizada con Python por Juan Esteban García Cardona
