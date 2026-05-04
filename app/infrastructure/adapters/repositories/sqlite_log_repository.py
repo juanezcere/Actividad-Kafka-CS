@@ -1,6 +1,9 @@
 import sqlite3
+from typing import List
+
 from app.domain.models.log import LogModel
 from app.domain.ports.log_repository import LogRepository
+from app.logging.logging import logging
 
 
 class SQLiteLogRepository(LogRepository):
@@ -12,6 +15,7 @@ class SQLiteLogRepository(LogRepository):
         return sqlite3.connect(self.db_path)
 
     def _create_table(self):
+        logging.debug("Creating logs table...")
         query = """
         CREATE TABLE IF NOT EXISTS logs (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -24,7 +28,8 @@ class SQLiteLogRepository(LogRepository):
         with self._get_connection() as conn:
             conn.execute(query)
 
-    def save(self, log: LogModel):
+    def save(self, log: LogModel) -> LogModel:
+        logging.debug(f"Saving log: {log}, from SQLite log repository")
         query = """
         INSERT INTO logs (timestamp, topic, level, message) 
         VALUES (?, ?, ?, ?)
@@ -39,7 +44,8 @@ class SQLiteLogRepository(LogRepository):
             conn.execute(query, parameters)
         return log
 
-    def find_all(self) -> list[LogModel]:
+    def find_all(self) -> List[LogModel]:
+        logging.debug("Finding all logs from SQLite log repository...")
         query = "SELECT id, timestamp, topic, level, message FROM logs ORDER BY timestamp DESC"
         with self._get_connection() as conn:
             cursor = conn.cursor()

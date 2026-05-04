@@ -1,7 +1,6 @@
-from hmac import new
-
 from kafka import KafkaConsumer
 from json import loads
+
 from app.domain.models.log import LogModel
 from app.infrastructure.adapters.repositories.sqlite_log_repository import SQLiteLogRepository
 
@@ -40,4 +39,4 @@ class LogPersistenceService:
     @eternal
     def run(self):
         for message in self.consumer:
-            print(f"Persisting log: {message}.")
+            print(f"New log received: {message}")

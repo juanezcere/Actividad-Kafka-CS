@@ -1,8 +1,7 @@
 from abc import ABC, abstractmethod
+from typing import Optional, List
 
 from .logger import LogLevel, ConsoleLogger, KafkaLogger
-
-from ..config import KAFKA_LOGS_TOPIC, KAFKA_SERVER_URL, KAFKA_LOG_LEVEL
 
 
 class ILogging(ABC):
@@ -28,7 +27,7 @@ class ILogging(ABC):
 
 
 class Logging(ILogging):
-    def __init__(self, loggers: list = None):
+    def __init__(self, loggers: Optional[List] = None):
         self.loggers = loggers or []
 
     def debug(self, message: str) -> None:

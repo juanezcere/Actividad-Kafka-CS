@@ -1,5 +1,6 @@
 from app.domain.models.book import BookModel
 from app.domain.ports.book_repository import BookRepository
+from app.logging.logging import logging
 
 
 class CreateBook:
@@ -15,4 +16,6 @@ class CreateBook:
             description=description,
             rating=rating
         )
+        logging.debug(
+            f"Creating book: {new_book} from CreateBook use case...")
         return self.repository.save(new_book)

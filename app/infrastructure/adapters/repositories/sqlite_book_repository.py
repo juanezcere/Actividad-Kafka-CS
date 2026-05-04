@@ -3,6 +3,7 @@ from typing import List, Optional
 
 from app.domain.models.book import BookModel
 from app.domain.ports.book_repository import BookRepository
+from app.logging.logging import logging
 
 
 class SQLiteBookRepository(BookRepository):
@@ -14,6 +15,7 @@ class SQLiteBookRepository(BookRepository):
         return sqlite3.connect(self.db_path)
 
     def _create_table(self):
+        logging.debug("Creating books table...")
         query = """
         CREATE TABLE IF NOT EXISTS books (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -28,15 +30,18 @@ class SQLiteBookRepository(BookRepository):
             conn.execute(query)
 
     def save(self, book: BookModel) -> BookModel:
+        logging.debug(f"Saving book: {book}, from SQLite book repository")
         with self._get_connection() as conn:
             cursor = conn.cursor()
             if book.id is None:
+                logging.debug("Inserting new book...")
                 query = "INSERT INTO books (title, author, pages, description, rating) VALUES (?, ?, ?, ?, ?)"
                 parameters = (book.title, book.author, book.pages,
                               book.description, book.rating)
                 cursor.execute(query, parameters)
                 book.id = cursor.lastrowid
             else:
+                logging.debug("Updating existing book...")
                 query = "UPDATE books SET title=?, author=?, pages=?, description=?, rating=? WHERE id=?"
                 parameters = (book.title, book.author, book.pages,
                               book.description, book.rating, book.id)
@@ -44,6 +49,7 @@ class SQLiteBookRepository(BookRepository):
             return book
 
     def find_all(self) -> List[BookModel]:
+        logging.debug("Finding all books from SQLite book repository...")
         query = "SELECT id, title, author, pages, description, rating FROM books"
         with self._get_connection() as conn:
             cursor = conn.cursor()
@@ -51,6 +57,8 @@ class SQLiteBookRepository(BookRepository):
             return [BookModel(*row) for row in rows]
 
     def find_by_id(self, book_id: int) -> Optional[BookModel]:
+        logging.debug(
+            f"Finding book by id: {book_id} from SQLite book repository...")
         query = "SELECT id, title, author, pages, description, rating FROM books WHERE id = ?"
         with self._get_connection() as conn:
             cursor = conn.cursor()
@@ -60,6 +68,8 @@ class SQLiteBookRepository(BookRepository):
             return None
 
     def delete(self, book_id: int) -> bool:
+        logging.debug(
+            f"Deleting book by id: {book_id} from SQLite book repository...")
         query = "DELETE FROM books WHERE id = ?"
         with self._get_connection() as conn:
             cursor = conn.cursor()
