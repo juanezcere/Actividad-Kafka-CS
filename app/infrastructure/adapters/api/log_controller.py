@@ -11,7 +11,7 @@ repo = SQLiteLogRepository()
 
 
 @router.get("/", response_model=List[LogModel])
-async def get_all_books() -> List[LogModel]:
+async def get_all_books():
     logging.info("Getting all logs from Log API controller...")
     use_case = GetAllLogs(repo)
     return use_case.execute()

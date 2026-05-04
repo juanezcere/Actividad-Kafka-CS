@@ -13,7 +13,7 @@ from app.logging.logging import logging
 
 def configure_logging():
     topic = config.KAFKA_LOGS_TOPIC or "AppTestingLogs"
-    server_url = config.KAFKA_SERVER_URL or "192.168.1.24:9092"
+    server_url = config.KAFKA_SERVER_URL or "localhost:9092"
     configure_console_logging(LogLevel.DEBUG)
     configure_kafka_logging(topic, server_url, LogLevel.INFO)
     logging.debug("Logging configured successfully.")

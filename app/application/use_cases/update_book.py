@@ -1,3 +1,4 @@
+from app.domain.exceptions.book_not_found import BookNotFoundException
 from app.domain.models.book import BookModel
 from app.domain.ports.book_repository import BookRepository
 from app.logging.logging import logging
@@ -11,7 +12,7 @@ class UpdateBook:
         existing_book = self.repository.find_by_id(book_id)
         if not existing_book:
             logging.error(f"The book with ID {book_id} was not found.")
-            raise Exception(f"The book with ID {book_id} was not found.")
+            raise BookNotFoundException(book_id)
         updated_book = BookModel(
             id=book_id,
             title=title,
