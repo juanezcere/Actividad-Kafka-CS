@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 import uvicorn
+import threading
 
 import app.config as config
 
@@ -14,7 +15,8 @@ def configure_logging():
     configure_console_logging(LogLevel.INFO)
     configure_kafka_logging(topic, server_url, LogLevel.DEBUG)
     log_service = LogPersistenceService(topic, server_url)
-    # log_service.run()
+    thread = threading.Thread(target=log_service.run)
+    thread.start()
 
 
 def configure_app():

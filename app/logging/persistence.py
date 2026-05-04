@@ -26,4 +26,4 @@ class LogPersistenceService:
     @eternal
     def run(self):
         for message in self.consumer:
-            print(message)
+            print(f"New log message received: {message}")
